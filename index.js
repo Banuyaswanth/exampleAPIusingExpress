@@ -45,7 +45,7 @@ app.get("/books/:bookid/", async (request, response) => {
 
 //Add Book API
 app.post("/books/", async (request, response) => {
-  let bookDetails = request.body();
+  let bookDetails = request.body;
   const {
     title,
     authorId,
@@ -75,4 +75,41 @@ app.post("/books/", async (request, response) => {
   let dbresponse = await db.run(addBookQuery);
   let bookid = dbresponse.lastID;
   response.send({ bookid: bookid });
+});
+
+//Update Book API
+
+app.put("/books/:bookid/", async (request, response) => {
+  const bookDetails = request.body;
+  const {
+    title,
+    authorId,
+    rating,
+    ratingCount,
+    reviewCount,
+    description,
+    pages,
+    dateOfPublication,
+    editionLanguage,
+    price,
+    onlineStores,
+  } = bookDetails;
+  const { bookid } = request.params;
+  const updateBookQuery = `UPDATE book SET 
+      title='${title}',
+      author_id=${authorId},
+      rating=${rating},
+      rating_count=${ratingCount},
+      review_count=${reviewCount},
+      description='${description}',
+      pages=${pages},
+      date_of_publication='${dateOfPublication}',
+      edition_language='${editionLanguage}',
+      price= ${price},
+      online_stores='${onlineStores}'
+    WHERE
+      book_id = ${bookid};`;
+
+  await db.run(updateBookQuery);
+  response.send("Book updated Succesfully");
 });
