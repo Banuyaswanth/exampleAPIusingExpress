@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const { open } = require("sqlite");
 const path = require("path");
 const sqlite3 = require("sqlite3");
@@ -40,4 +41,38 @@ app.get("/books/:bookid/", async (request, response) => {
                             where book_id = ${bookid};`;
   let book = await db.get(getbookquery);
   response.send(book);
+});
+
+//Add Book API
+app.post("/books/", async (request, response) => {
+  let bookDetails = request.body();
+  const {
+    title,
+    authorId,
+    rating,
+    ratingCount,
+    reviewCount,
+    description,
+    pages,
+    dateOfPublication,
+    editionLanguage,
+    price,
+    onlineStores,
+  } = bookDetails;
+  const addBookQuery = `INSERT INTO book 
+    (title,author_id,rating,rating_count,review_count,description,pages,date_of_publication,edition_language,price,online_stores)
+    values ('${title}',
+         ${authorId},
+         ${rating},
+         ${ratingCount},
+         ${reviewCount},
+        '${description}',
+         ${pages},
+        '${dateOfPublication}',
+        '${editionLanguage}',
+         ${price},
+        '${onlineStores}');`;
+  let dbresponse = await db.run(addBookQuery);
+  let bookid = dbresponse.lastID;
+  response.send({ bookid: bookid });
 });
