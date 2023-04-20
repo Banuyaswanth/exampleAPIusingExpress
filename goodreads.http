@@ -38,3 +38,6 @@ Content-Type: application/json
   "price": 850,
   "onlineStores": "Amazon,Audible,Indigo,Apple Books,Google Play,IndieBound"
 }
+###
+
+DELETE http://localhost:3000/books/41/
