@@ -121,3 +121,11 @@ app.delete("/books/:bookid/", async (request, response) => {
   await db.run(deleteBookQuery);
   response.send("Book Deleted Succesfully");
 });
+
+//API for Getting the books of an author
+app.get("/authors/:authorId/books/", async (request, response) => {
+  const { authorId } = request.params;
+  const authorBooksQuery = `select * from book where author_id = ${authorId};`;
+  let bookList = await db.all(authorBooksQuery);
+  response.send(bookList);
+});
